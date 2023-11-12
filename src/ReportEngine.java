@@ -1,9 +1,6 @@
 import java.util.ArrayList;
 
 public class ReportEngine { //механизм отчетов
-    //public ArrayList<Transaction> monthReport = new ArrayList<>();
-
-
     public FileReader fileReader = new FileReader();
 
     public ArrayList<TransactionMonth> month(String path) { //заполение элементов
