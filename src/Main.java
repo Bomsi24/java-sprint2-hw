@@ -7,25 +7,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        String[] MONTHS = {"Январь", "Февраль", "Март", "Апрель", "Май",
-                "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Декабрь"};
-
-        String[] MONTHS_NUMBER = {"01", "02", "03", "04", "05", "06", "07", "08", "09", " 10", "11", "12"};
-
-        ArrayList<String> yearsNumber = new ArrayList<>();
-
         YearlyReport yearlyReport = new YearlyReport();
         MonthlyReport monthlyReport = new MonthlyReport();
-
-        ArrayList<String> monthReport = new ArrayList<>();
-        ArrayList<String> yearReport = new ArrayList<>();
-
-        monthReport.add("m.202101.csv");
-        monthReport.add("m.202102.csv");
-        monthReport.add("m.202103.csv");
-
-        yearsNumber.add("2021");
-        yearReport.add("y.2021.csv");
 
 
         while (true) {
@@ -35,13 +18,28 @@ public class Main {
             int command = scanner.nextInt();
 
             if (command == 1) {
-                for (int i = 0; i < monthReport.size(); i++) {// заполненение отчета
-                    monthlyReport.loadMonth(MONTHS_NUMBER[i], monthReport.get(i));
+                if(monthlyReport.listOfMonths.isEmpty()) { // проверка что бы не дублировались отчеты
+                    monthlyReport.listOfMonths.add("m.202101.csv");
+                    monthlyReport.listOfMonths.add("m.202102.csv");
+                    monthlyReport.listOfMonths.add("m.202103.csv");
+                }
+
+                for (int i = 0; i < monthlyReport.listOfMonths.size(); i++) {// заполненение отчета
+                    if (!monthlyReport.report.containsKey(monthlyReport.listOfMonths.get(i))) { //проверка данных отчетов нет
+                        monthlyReport.loadMonth(monthlyReport.MONTHS_NUMBER[i], monthlyReport.listOfMonths.get(i));
+                    }
                 }
                 System.out.println(printCompletionOperation);
             } else if (command == 2) {
-                yearlyReport.loadYear(yearsNumber.get(0), yearReport.get(0));
+                if(yearlyReport.listOfYears.isEmpty()) {// проверка что бы не дублировались отчеты
+                    yearlyReport.yearsNumber.add("2021");
+                    yearlyReport.listOfYears.add("y.2021.csv");
+                }
 
+                for (int i = 0; i < yearlyReport.listOfYears.size(); i++) {// заполненение отчета
+                    if(!yearlyReport.report.containsKey(yearlyReport.yearsNumber.get(i))) //проверка данных отчетов нет
+                        yearlyReport.loadYear(yearlyReport.yearsNumber.get(i), yearlyReport.listOfYears.get(i));
+                }
                 System.out.println(printCompletionOperation);
             } else if (command == 3) {
                 if ((!monthlyReport.isCheck()) || (!yearlyReport.isCheck())) {
@@ -53,13 +51,13 @@ public class Main {
                 if (!monthTotalPerYear.dataReconciliationIncome().isEmpty()) {
                     for (String month : monthTotalPerYear.dataReconciliationIncome()) {
                         int index = Integer.parseInt(month);
-                        System.out.println("Несоответствие данных по доходам: " + MONTHS[index - 1]);
+                        System.out.println("Несоответствие данных по доходам: " + monthlyReport.MONTHS[index - 1]);
                     }
                 }
                 if (!monthTotalPerYear.dataReconciliationExpense().isEmpty()) {
                     for (String month : monthTotalPerYear.dataReconciliationExpense()) {
                         int index = Integer.parseInt(month);
-                        System.out.println("Несоответствие данных расходам: " + MONTHS[index - 1]);
+                        System.out.println("Несоответствие данных расходам: " + monthlyReport.MONTHS[index - 1]);
                     }
                 }
 
@@ -71,17 +69,17 @@ public class Main {
                     continue;
                 }
 
-                for (int i = 0; i < monthReport.size(); i++) {//Вывод информации по месяцам
-                    System.out.println(MONTHS[i]);
-                    for (String month : monthlyReport.getTopExpenses(MONTHS_NUMBER[i]).keySet()) {
+                for (int i = 0; i < monthlyReport.listOfMonths.size(); i++) {//Вывод информации по месяцам
+                    System.out.println(monthlyReport.MONTHS[i]);
+                    for (String month : monthlyReport.getTopExpenses(monthlyReport.MONTHS_NUMBER[i]).keySet()) {
                         System.out.println("Самый большой расход:");
                         System.out.println("Категория: " + month);
-                        System.out.println("Расход: " + monthlyReport.getTopExpenses(MONTHS_NUMBER[i]).get(month));
+                        System.out.println("Расход: " + monthlyReport.getTopExpenses(monthlyReport.MONTHS_NUMBER[i]).get(month));
                     }
-                    for (String month : monthlyReport.getTopIncome(MONTHS_NUMBER[i]).keySet()) {
+                    for (String month : monthlyReport.getTopIncome(monthlyReport.MONTHS_NUMBER[i]).keySet()) {
                         System.out.println("Самый большой доход:");
                         System.out.println("Категория: " + month);
-                        System.out.println("Доход: " + monthlyReport.getTopIncome(MONTHS_NUMBER[i]).get(month));
+                        System.out.println("Доход: " + monthlyReport.getTopIncome(monthlyReport.MONTHS_NUMBER[i]).get(month));
                     }
                 }
                 System.out.println(printCompletionOperation);
@@ -91,15 +89,17 @@ public class Main {
                     System.out.println("Считайте годовой отчет");
                     continue;
                 }
-                for (int i = 0; i < yearsNumber.size(); i++) {
-                    System.out.println("Год " + yearsNumber.get(i));
-                    for (String month : yearlyReport.getProfitableMonth(yearsNumber.get(i)).keySet()) { // доходы по месяцам
+                for (int i = 0; i < yearlyReport.yearsNumber.size(); i++) {
+                    System.out.println("Год " + yearlyReport.yearsNumber.get(i));
+                    for (String month : yearlyReport.getProfitableMonth(yearlyReport.yearsNumber.get(i)).keySet()) { // доходы по месяцам
                         int monthNumber = Integer.parseInt(month);
-                        System.out.println("Месяц: " + MONTHS[monthNumber - 1]);
-                        System.out.println("Прибыль: " + yearlyReport.getProfitableMonth(yearsNumber.get(i)).get(month));
+                        System.out.println("Месяц: " + monthlyReport.MONTHS[monthNumber - 1]);
+                        System.out.println("Прибыль: " + yearlyReport.getProfitableMonth(yearlyReport.yearsNumber.get(i)).get(month));
                     }
-                    System.out.println("Cредний расход за все имеющиеся операции в году: " + yearlyReport.getAverageExpenses(yearsNumber.get(i)));
-                    System.out.println("Cредний доход за все имеющиеся операции в году: " + yearlyReport.getAverageIncome(yearsNumber.get(i)));
+                    System.out.println("Cредний расход за все имеющиеся операции в году: "
+                            + yearlyReport.getAverageExpenses(yearlyReport.yearsNumber.get(i)));
+                    System.out.println("Cредний доход за все имеющиеся операции в году: "
+                            + yearlyReport.getAverageIncome(yearlyReport.yearsNumber.get(i)));
                 }
 
                 System.out.println(printCompletionOperation);

@@ -2,7 +2,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class YearlyReport { //годовой отчет
-
+    ArrayList<String> yearsNumber = new ArrayList<>();
+    ArrayList<String> listOfYears = new ArrayList<>();
     ReportEngine reportEngine = new ReportEngine();
 
     public HashMap<String, ArrayList<TransactionYear>> report = new HashMap<>();
@@ -43,19 +44,17 @@ public class YearlyReport { //годовой отчет
 
             }
         }
-        int averageExpense = 0;
         int sum = 0;
         for (Integer i : average) {
             sum += i;
         }
-        return averageExpense = sum / average.size();
+        return sum / average.size();
     }
 
     public int getAverageIncome(String yearName) { // средний доход за все имеющиеся операции в году.
         ArrayList<TransactionYear> year = report.get(yearName);
 
         ArrayList<Integer> average = new ArrayList<>();
-        int averageIncome = 0;
         int sum = 0;
         for (TransactionYear transaction : year) {// проходимся по спику  transactions
             if (!transaction.isExpense) { // Проверяем является ли доходом
@@ -65,7 +64,7 @@ public class YearlyReport { //годовой отчет
                 sum += i;
             }
         }
-        return averageIncome = sum / average.size();
+        return sum / average.size();
     }
 
     public HashMap<String, Integer> getIncome(String yearName) {

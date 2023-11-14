@@ -2,6 +2,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MonthlyReport { //Ежемесячный отчет
+    public String[] MONTHS = {"Январь", "Февраль", "Март", "Апрель", "Май",
+            "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Декабрь"};
+    public String[] MONTHS_NUMBER = {"01", "02", "03", "04", "05", "06", "07", "08", "09", " 10", "11", "12"};
+    ArrayList<String> listOfMonths = new ArrayList<>();
 
     ReportEngine reportEngine = new ReportEngine();
 
